@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Window Management",
+  "name": "Window Management Demo for Foldable Devices",
   "icons": [
     {
       "src": "favicon.ico",
