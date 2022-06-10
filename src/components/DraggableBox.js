@@ -15,7 +15,7 @@ const Box = styled.div`
   width: ${({ width }) => width}px;
   height: ${({ height }) => height}px;
   background-color: ${({ isHidden, isDragging }) =>
-    isHidden ? "#fff" : isDragging ? "#bbb" : "#ddd"};
+    isHidden ? "#fff" : isDragging ? "#99f" : "#bbf"};
   transition: all 0.05s;
 `;
 

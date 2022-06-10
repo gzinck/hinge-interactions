@@ -1,6 +1,15 @@
-# Getting Started with Create React App
+# Window Management
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A simple demo of how we could use crossing at the hinge to perform window management.
+
+## Getting started
+
+- Install `node`
+- In the project directory, install dependencies with `npm install`
+- Run with `npm start`
+- Go to `http://localhost:3000` in your web browser to try it out! Try dragging
+  from the blue box and crossing the "hinge" or horizontal center to rearrange
+  where the box is positioned.
 
 ## Available Scripts
 
