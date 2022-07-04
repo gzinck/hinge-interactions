@@ -4,12 +4,13 @@ A simple demo of how we could use crossing at the hinge to perform window manage
 
 ## Getting started
 
-- Install `node`
-- In the project directory, install dependencies with `npm install`
-- Run with `npm start`
-- Go to `http://localhost:3000` in your web browser to try it out! Try dragging
-  from the blue box and crossing the "hinge" or horizontal center to rearrange
-  where the box is positioned.
+-   Install `node`
+-   In the project directory, install dependencies with `npm install`
+-   Run with `npm start`
+-   Go to `http://localhost:3000` in your web browser to try it out! Try dragging
+    from the Chrome window pictured and crossing the "hinge" or horizontal center to rearrange
+-   Try another demo by going to `http://localhost:3000/circle`, which shows how we can cross
+    the hinge multiple times using our interaction technique
 
 ## Available Scripts
 

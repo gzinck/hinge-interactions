@@ -13,7 +13,6 @@ import HalfHorizWindow from "./windows/half-horiz.jpg";
 import QuarterWindow from "./windows/quarter.jpg";
 import QuarterHorizWindow from "./windows/quarter-horiz.jpg";
 
-const numSVGs = 4;
 const defaultSpeed = 0.05;
 
 const Box = styled.img`
@@ -78,8 +77,9 @@ function DraggableWindow() {
             return State.BOT_RIGHT;
           case State.BOT_RIGHT:
             return State.BOT_LEFT;
+          default:
+            return state;
         }
-        return state;
       });
     } else {
       setState(state => {
@@ -92,8 +92,9 @@ function DraggableWindow() {
             return State.BOT_RIGHT;
           case State.BOT_RIGHT:
             return State.BOT_LEFT;
+          default:
+            return state;
         }
-        return state;
       });
     }
   }, [isVertical]);
@@ -289,10 +290,10 @@ function DraggableWindow() {
             ? 1
             : 0.4
         }
-        index={0}
-        numSVGs={numSVGs}
+        fraction={0.5 / 4}
         isVertical={isVertical}
         rotate={isVertical ? 0 : 90}
+        white
       />
       <Icon
         src={FullIcon}
@@ -303,16 +304,16 @@ function DraggableWindow() {
             ? 1
             : 0.4
         }
-        index={1}
-        numSVGs={numSVGs}
+        fraction={1.5 / 4}
         isVertical={isVertical}
+        white
       />
       <Icon
         src={CloseIcon}
         opacity={!isDragging ? 0 : state === State.HIDDEN ? 1 : 0.4}
-        index={2}
-        numSVGs={numSVGs}
+        fraction={2.5 / 4}
         isVertical={isVertical}
+        white
       />
       <Icon
         src={RightIcon}
@@ -323,10 +324,10 @@ function DraggableWindow() {
             ? 1
             : 0.4
         }
-        index={3}
-        numSVGs={numSVGs}
+        fraction={3.5 / 4}
         isVertical={isVertical}
         rotate={isVertical ? 0 : 90}
+        white
       />
     </>
   );
