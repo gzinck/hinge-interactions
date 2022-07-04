@@ -9,9 +9,12 @@ import Icon from "./Icon";
 
 import DraggableWindowImg from "./windows/draggable.png";
 import HalfWindow from "./windows/half.jpg";
+import HalfHorizWindow from "./windows/half-horiz.jpg";
 import QuarterWindow from "./windows/quarter.jpg";
+import QuarterHorizWindow from "./windows/quarter-horiz.jpg";
 
 const numSVGs = 4;
+const defaultSpeed = 0.05;
 
 const Box = styled.img`
   user-select: none;
@@ -22,8 +25,8 @@ const Box = styled.img`
   height: ${({ height }) => height}px;
   background-color: ${({ isHidden, isDragging }) =>
     isHidden ? "#fff" : isDragging ? "#99f" : "#bbf"};
-  opacity: ${({ src }) => src ? 1 : 0};
-  transition: all 0.05s;
+  opacity: ${({ src }) => (src ? 1 : 0)};
+  transition: all ${({ speed }) => speed || 0}s;
 `;
 
 const State = {
@@ -54,21 +57,69 @@ const crossDownStates = [
 function DraggableWindow() {
   const ref = React.useRef(null);
   const { width, height } = useWindowDimensions();
+  const [shortSideLen, longSideLen, isVertical] =
+    width < height ? [width, height, true] : [height, width, false];
   const [state, setState] = React.useState(State.TOP);
+  const [speed, setSpeed] = React.useState(defaultSpeed);
   const [isDragging, setIsDragging] = React.useState(false);
-  const [pos, setPos] = React.useState({ x: 0, y: 0 });
+  const [pos, setPos] = React.useState({ shortDir: 0, longDir: 0 });
+
+  // TODO: use an event to listen to window size change
+  React.useEffect(() => {
+    setSpeed(0);
+    if (isVertical) {
+      setState(state => {
+        switch (state) {
+          case State.TOP_LEFT:
+            return State.TOP_RIGHT;
+          case State.TOP_RIGHT:
+            return State.TOP_LEFT;
+          case State.BOT_LEFT:
+            return State.BOT_RIGHT;
+          case State.BOT_RIGHT:
+            return State.BOT_LEFT;
+        }
+        return state;
+      });
+    } else {
+      setState(state => {
+        switch (state) {
+          case State.TOP_LEFT:
+            return State.TOP_RIGHT;
+          case State.TOP_RIGHT:
+            return State.TOP_LEFT;
+          case State.BOT_LEFT:
+            return State.BOT_RIGHT;
+          case State.BOT_RIGHT:
+            return State.BOT_LEFT;
+        }
+        return state;
+      });
+    }
+  }, [isVertical]);
+  // Immediately after render, set speed to slow
+  if (isDragging && speed === 0) setSpeed(defaultSpeed);
 
   React.useEffect(() => {
     let isDragging = false;
     let state = State.TOP;
-    let pos = { x: 0, y: 0 };
+    let pos = { shortDir: 0, longDir: 0 };
 
     const getPos = e => {
-      if (e.x && e.y) return { x: e.x, y: e.y };
-      return {
-        x: e.touches[0].clientX,
-        y: e.touches[0].clientY,
-      };
+      if (e.x && e.y) {
+        return isVertical
+          ? { shortDir: e.x, longDir: e.y }
+          : { shortDir: e.y, longDir: e.x };
+      }
+      return isVertical
+        ? {
+            shortDir: e.touches[0].clientX,
+            longDir: e.touches[0].clientY,
+          }
+        : {
+            shortDir: e.touches[0].clientY,
+            longDir: e.touches[0].clientX,
+          };
     };
 
     const onStart = e => {
@@ -81,12 +132,12 @@ function DraggableWindow() {
       setPos(pos);
     };
 
-    const hingeY = height / 2;
+    const hingePos = longSideLen / 2;
     const bounds = [
-      [0, width / 4],
-      [width / 4, width / 2],
-      [width / 2, (3 * width) / 4],
-      [(3 * width) / 4, width],
+      [0, shortSideLen / 4],
+      [shortSideLen / 4, shortSideLen / 2],
+      [shortSideLen / 2, (3 * shortSideLen) / 4],
+      [(3 * shortSideLen) / 4, shortSideLen],
     ];
 
     const onMove = e => {
@@ -96,18 +147,18 @@ function DraggableWindow() {
       setPos(pos);
 
       // If cross down
-      if (prvPos.y < hingeY && pos.y >= hingeY) {
+      if (prvPos.longDir < hingePos && pos.longDir >= hingePos) {
         bounds.forEach((b, i) => {
-          if (b[0] <= pos.x && b[1] > pos.x) {
+          if (b[0] <= pos.shortDir && b[1] > pos.shortDir) {
             state = crossDownStates[i];
             setState(state);
           }
         });
       }
       // If cross up
-      if (prvPos.y >= hingeY && pos.y < hingeY) {
+      if (prvPos.longDir >= hingePos && pos.longDir < hingePos) {
         bounds.forEach((b, i) => {
-          if (b[0] <= pos.x && b[1] > pos.x) {
+          if (b[0] <= pos.shortDir && b[1] > pos.shortDir) {
             state = crossUpStates[i];
             setState(state);
           }
@@ -140,72 +191,74 @@ function DraggableWindow() {
       window.removeEventListener("touchend", onEnd);
       window.removeEventListener("mouseup", onEnd);
     };
-  }, [width, height]);
+  }, [shortSideLen, longSideLen, isVertical]);
 
-  let boxWidth = width / 2;
+  let boxShortLen = shortSideLen / 2;
   switch (state) {
     case State.FOLLOW:
-      boxWidth = 494;
+      boxShortLen = 494;
       break;
     case State.TOP:
     case State.BOTTOM:
     case State.FULL:
     case State.HIDDEN:
-      boxWidth = width;
+      boxShortLen = shortSideLen;
       break;
     default:
   }
 
-  let boxHeight = height / 2;
+  let boxLongLen = longSideLen / 2;
   switch (state) {
     case State.FOLLOW:
-      boxHeight = 391;
+      boxLongLen = 391;
       break;
     case State.FULL:
     case State.HIDDEN:
-      boxHeight = height;
+      boxLongLen = height;
       break;
     default:
   }
 
-  let x = pos.x - boxWidth / 2;
-  let y = pos.y - boxHeight / 2;
+  let shortDir = pos.shortDir - boxShortLen / 2;
+  let longDir = pos.longDir - boxLongLen / 2;
   switch (state) {
     case State.FULL:
     case State.HIDDEN:
     case State.TOP:
     case State.TOP_LEFT:
-      x = 0;
-      y = 0;
+      shortDir = 0;
+      longDir = 0;
       break;
     case State.TOP_RIGHT:
-      x = width / 2;
-      y = 0;
+      shortDir = shortSideLen / 2;
+      longDir = 0;
       break;
     case State.BOTTOM:
     case State.BOT_LEFT:
-      x = 0;
-      y = height / 2;
+      shortDir = 0;
+      longDir = longSideLen / 2;
       break;
     case State.BOT_RIGHT:
-      x = width / 2;
-      y = height / 2;
+      shortDir = shortSideLen / 2;
+      longDir = longSideLen / 2;
       break;
     default:
   }
 
   let src = null;
-  switch(state) {
+  switch (state) {
     case State.TOP:
     case State.BOTTOM:
     case State.FULL:
-      src = HalfWindow;
+      if (isVertical) src = HalfWindow;
+      else src = HalfHorizWindow;
       break;
     case State.TOP_LEFT:
     case State.TOP_RIGHT:
     case State.BOT_LEFT:
     case State.BOT_RIGHT:
-      src = QuarterWindow;
+      if (isVertical) src = QuarterWindow;
+      else src = QuarterHorizWindow;
       break;
     case State.FOLLOW:
       src = DraggableWindowImg;
@@ -219,12 +272,13 @@ function DraggableWindow() {
         draggable={false}
         src={src}
         ref={ref}
-        x={x}
-        y={y}
-        width={boxWidth}
-        height={boxHeight}
+        x={isVertical ? shortDir : longDir}
+        y={isVertical ? longDir : shortDir}
+        width={isVertical ? boxShortLen : boxLongLen}
+        height={isVertical ? boxLongLen : boxShortLen}
         isDragging={isDragging}
         isHidden={state === State.HIDDEN}
+        speed={speed}
       />
       <Icon
         src={LeftIcon}
@@ -237,6 +291,8 @@ function DraggableWindow() {
         }
         index={0}
         numSVGs={numSVGs}
+        isVertical={isVertical}
+        rotate={isVertical ? 0 : 90}
       />
       <Icon
         src={FullIcon}
@@ -249,12 +305,14 @@ function DraggableWindow() {
         }
         index={1}
         numSVGs={numSVGs}
+        isVertical={isVertical}
       />
       <Icon
         src={CloseIcon}
         opacity={!isDragging ? 0 : state === State.HIDDEN ? 1 : 0.4}
         index={2}
         numSVGs={numSVGs}
+        isVertical={isVertical}
       />
       <Icon
         src={RightIcon}
@@ -267,6 +325,8 @@ function DraggableWindow() {
         }
         index={3}
         numSVGs={numSVGs}
+        isVertical={isVertical}
+        rotate={isVertical ? 0 : 90}
       />
     </>
   );

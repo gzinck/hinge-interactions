@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import DraggableWindow from "./DraggableWindow";
+import DraggableCircle from "./DraggableCircle";
 import BgImg from "./windows/bg.jpg";
 
 const Screen = styled.div`
@@ -18,13 +18,13 @@ const Img = styled.img`
   top: 0;
 `;
 
-function DragScreen() {
+function DraggableCircleScreen() {
   return (
     <Screen>
       <Img src={BgImg} draggable={false} />
-      <DraggableWindow />
+      <DraggableCircle />
     </Screen>
   );
 }
 
-export default DragScreen;
+export default DraggableCircleScreen;
