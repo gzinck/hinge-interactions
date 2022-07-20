@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import DraggableWindow from "./DraggableWindow";
-import BgImg from "./windows/bg.jpg";
+import BgImg from "./screenshots/bg.jpg";
 
 const Screen = styled.div`
   width: 100vw;

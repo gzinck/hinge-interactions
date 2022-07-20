@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import useWindowDimensions from "../hooks/useWindowDimensions";
+import useWindowDimensions from "../../hooks/useWindowDimensions";
 
 const size = 300;
 const Circle = styled.div`

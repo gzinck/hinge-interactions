@@ -1,17 +1,17 @@
 import React from "react";
 import styled from "@emotion/styled";
-import useWindowDimensions from "../hooks/useWindowDimensions";
+import useWindowDimensions from "../../hooks/useWindowDimensions";
 import CloseIcon from "./icons/Close.svg";
 import FullIcon from "./icons/Full Screen.svg";
 import RightIcon from "./icons/Right.svg";
 import LeftIcon from "./icons/Left.svg";
-import Icon from "./Icon";
+import Icon from "../util/Icon";
 
-import DraggableWindowImg from "./windows/draggable.png";
-import HalfWindow from "./windows/half.jpg";
-import HalfHorizWindow from "./windows/half-horiz.jpg";
-import QuarterWindow from "./windows/quarter.jpg";
-import QuarterHorizWindow from "./windows/quarter-horiz.jpg";
+import DraggableWindowImg from "./screenshots/draggable.png";
+import HalfWindow from "./screenshots/half.jpg";
+import HalfHorizWindow from "./screenshots/half-horiz.jpg";
+import QuarterWindow from "./screenshots/quarter.jpg";
+import QuarterHorizWindow from "./screenshots/quarter-horiz.jpg";
 
 const defaultSpeed = 0.05;
 
