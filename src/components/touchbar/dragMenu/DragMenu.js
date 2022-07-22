@@ -2,7 +2,6 @@ import React from "react";
 import styled from "@emotion/styled";
 import BarButton from "../BarButton";
 import { fromEvent } from "rxjs";
-import { throttleTime } from "rxjs/operators";
 import { getOptionIdx } from "./constants";
 import { getTouchPos } from "../../../utils/events";
 import OptionsBar from "./OptionsBar";
@@ -26,10 +25,6 @@ function DragMenu({ options, hideIcon, setHideIcons, offImg, onImg }) {
     if (!ref.current) return;
     let startX = 0;
     let endSubs = [];
-
-    const onMove = e => {
-      if (endSubs.length === 0) return;
-    };
 
     const onEnd = e => {
       if (endSubs.length === 0) return;
@@ -55,8 +50,6 @@ function DragMenu({ options, hideIcon, setHideIcons, offImg, onImg }) {
       startX = getTouchPos(e).x;
 
       endSubs = [
-        fromEvent(window, "touchmove").pipe(throttleTime(50)).subscribe(onMove),
-        fromEvent(window, "mousemove").pipe(throttleTime(50)).subscribe(onMove),
         fromEvent(window, "touchend").subscribe(onEnd),
         fromEvent(window, "mouseup").subscribe(onEnd),
       ];
