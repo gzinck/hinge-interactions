@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
+import { getTouchPos } from "../../utils/events";
 
 const size = 300;
 const Circle = styled.div`
@@ -28,25 +29,17 @@ function DraggableCircle({ id, onStartDrag, onEndDrag, onDrag, x, y, colour }) {
     let isDragging = false;
     let prvPos = { x: 0, y: 0 };
 
-    const getPos = e => {
-      if (e.x && e.y) return { x: e.x, y: e.y };
-      return {
-        x: e.touches[0].clientX,
-        y: e.touches[0].clientY,
-      };
-    };
-
     const onStart = e => {
       if (!isDragging) {
         isDragging = true;
         onStartDrag(id);
-        prvPos = getPos(e);
+        prvPos = getTouchPos(e);
       }
     };
 
     const onMove = e => {
       if (!isDragging) return;
-      const pos = getPos(e);
+      const pos = getTouchPos(e);
 
       // If cross down
       const crossed = isVertical

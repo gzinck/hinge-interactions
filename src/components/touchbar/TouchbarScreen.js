@@ -1,15 +1,15 @@
-import DraggableWindow from "./DraggableWindow";
 import BgImage from "../util/BgImage";
 import Screen from "../util/Screen";
 import img from "./screenshots/bg.jpg";
+import Touchbar from './Touchbar';
 
-function DraggableWindowScreen() {
+function TouchbarScreen() {
   return (
     <Screen>
       <BgImage src={img} draggable={false} />
-      <DraggableWindow />
+      <Touchbar />
     </Screen>
   );
 }
 
-export default DraggableWindowScreen;
+export default TouchbarScreen;

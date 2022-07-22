@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
-import { DRAW_ROUTE, WINDOW_ROUTE } from "../../routes";
+import { DRAW_ROUTE, WINDOW_ROUTE, TOUCHBAR_ROUTE } from "../../routes";
 import theme from "../../theme";
 
 const Screen = styled.div`
@@ -41,8 +41,9 @@ function Home() {
     <Screen>
       <h1>Hinge-based interaction demos</h1>
       <ButtonBar>
-        <Button to={DRAW_ROUTE}>Drawing App</Button>
+        <Button to={TOUCHBAR_ROUTE}>Touchbar App</Button>
         <Button to={WINDOW_ROUTE}>Window Management App</Button>
+        <Button to={DRAW_ROUTE}>Drawing App</Button>
       </ButtonBar>
     </Screen>
   );
