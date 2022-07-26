@@ -10,7 +10,7 @@ import HalfImg from "../window/screenshots/half.jpg";
 const Window = styled.img`
   position: absolute;
   height: 50vh;
-  width: 100vh;
+  width: 100vw;
   left: 0;
   top: ${({ isBottom }) => (isBottom ? "50vh" : 0)};
 `;

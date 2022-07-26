@@ -5,7 +5,6 @@ import MultitaskWindow from "./MultitaskWindow";
 function MultitaskBar({ onMove }) {
   const cb = React.useCallback(
     isBottom => {
-      console.log("CALLED");
       // Do something to close hiddenbar if possible
       onMove(isBottom);
     },

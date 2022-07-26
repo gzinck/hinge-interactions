@@ -1,6 +1,4 @@
 import React from "react";
-import styled from "@emotion/styled";
-import theme from "../../theme";
 import BarButton from "./BarButton";
 import AirplaneOn from "./icons/airplane.svg";
 import AirplaneOff from "./icons/airplane_off.svg";
