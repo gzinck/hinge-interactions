@@ -2,6 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import BarButton from "../BarButton";
 import { fromEvent } from "rxjs";
+import { throttleTime } from "rxjs/operators";
 import { getOptionIdx } from "./constants";
 import { getTouchPos } from "../../../utils/events";
 import OptionsBar from "./OptionsBar";
@@ -23,8 +24,14 @@ function DragMenu({ options, hideIcon, setHideIcons, offImg, onImg }) {
 
   React.useEffect(() => {
     if (!ref.current) return;
-    let startX = 0;
     let endSubs = [];
+    let startX = 0;
+    let currOffset = 0;
+    
+    const onMove = e => {
+      if (endSubs.length === 0) return;
+      currOffset = startX - getTouchPos(e).x;
+    }
 
     const onEnd = e => {
       if (endSubs.length === 0) return;
@@ -34,10 +41,7 @@ function DragMenu({ options, hideIcon, setHideIcons, offImg, onImg }) {
       setHideIcons(false);
 
       // Change which item is selected
-      // @TODO: does this work with touch input? Probably not... maybe we
-      //  need to hold onto a reference of xOffset from onMove
-      const currOffset = getTouchPos(e).x - startX;
-      let newSelectedIdx = getOptionIdx(currOffset, options.length);
+      let newSelectedIdx = getOptionIdx(-currOffset, options.length);
       if (newSelectedIdx >= selectedIdx) newSelectedIdx += 1;
       // Only update if we actually changed the selected index
       if (newSelectedIdx < options.length) setSelectedIdx(newSelectedIdx);
@@ -50,6 +54,8 @@ function DragMenu({ options, hideIcon, setHideIcons, offImg, onImg }) {
       startX = getTouchPos(e).x;
 
       endSubs = [
+        fromEvent(window, "touchmove").pipe(throttleTime(50)).subscribe(onMove),
+        fromEvent(window, "mousemove").pipe(throttleTime(50)).subscribe(onMove),
         fromEvent(window, "touchend").subscribe(onEnd),
         fromEvent(window, "mouseup").subscribe(onEnd),
       ];

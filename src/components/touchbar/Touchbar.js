@@ -51,10 +51,12 @@ function Touchbar() {
   React.useEffect(() => {
     let endSubs = [];
     let startX = 0;
+    let currOffset = 0;
 
     const onMove = e => {
       if (endSubs.length === 0) return;
-      setLeftPos(startX - (startX - getTouchPos(e).x));
+      currOffset = startX - getTouchPos(e).x;
+      setLeftPos(startX - currOffset);
     };
 
     const onEnd = e => {
@@ -62,9 +64,6 @@ function Touchbar() {
       endSubs.forEach(sub => sub.unsubscribe());
       endSubs = [];
 
-      // @TODO: does this work with touch input? Probably not... maybe we
-      //  need to hold onto a reference of xOffset from onMove
-      const currOffset = startX - getTouchPos(e).x;
       if (currOffset > pulloutDistance) {
         setLeftPos(0);
       } else {
