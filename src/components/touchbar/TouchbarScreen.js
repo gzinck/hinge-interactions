@@ -1,13 +1,28 @@
+import React from "react";
+import styled from "@emotion/styled";
 import BgImage from "../util/BgImage";
 import Screen from "../util/Screen";
 import img from "./screenshots/bg.jpg";
-import Touchbar from './Touchbar';
+import Touchbar from "./Touchbar";
+import MultitaskBar from "./multitask/MultitaskBar";
+import HalfImg from "../window/screenshots/half.jpg";
+
+const Window = styled.img`
+  position: absolute;
+  height: 50vh;
+  width: 100vh;
+  left: 0;
+  top: ${({ isBottom }) => (isBottom ? "50vh" : 0)};
+`;
 
 function TouchbarScreen() {
+  const [isBottom, setIsBottom] = React.useState(null);
   return (
     <Screen>
       <BgImage src={img} draggable={false} />
+      {isBottom !== null && <Window src={HalfImg} isBottom={isBottom} />}
       <Touchbar />
+      <MultitaskBar onMove={setIsBottom} />
     </Screen>
   );
 }
