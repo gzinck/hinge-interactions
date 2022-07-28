@@ -67,7 +67,7 @@ function MultitaskWindow({ onMove: onMoveWindow }) {
   }, [onMoveWindow]);
 
   return (
-    <Window pos={pos} ref={ref} src={DraggableImg} />
+    <Window draggable={false} pos={pos} ref={ref} src={DraggableImg} />
   );
 }
 

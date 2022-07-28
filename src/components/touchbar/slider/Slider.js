@@ -15,6 +15,7 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  user-select: none;
 `;
 
 function Slider({ setHideIcons, hideIcon, onImg, offImg }) {

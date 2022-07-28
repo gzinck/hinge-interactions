@@ -8,6 +8,7 @@ import RedIcon from "./icons/red.svg";
 import GreenIcon from "./icons/green.svg";
 import CircleClose from "./icons/circle-close.svg";
 import CirclePlus from "./icons/circle-plus.svg";
+import Screen from "../util/Screen";
 
 const icons = [
   { icon: CirclePlus, fraction: 1 / 8 },
@@ -16,13 +17,6 @@ const icons = [
   { icon: GreenIcon, fraction: 2 / 3 },
   { icon: CircleClose, fraction: 7 / 8 },
 ];
-
-const Screen = styled.div`
-  width: 100vw;
-  height: 100vh;
-  position: relative;
-  overflow: hidden;
-`;
 
 const colours = {
   BLUE: "#5289ff",

@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "@emotion/styled";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
+import { fromEvent } from "rxjs";
+import { throttleTime } from "rxjs/operators";
 import { getTouchPos } from "../../utils/events";
 
 const size = 300;
@@ -12,7 +14,7 @@ const Circle = styled.div`
   height: ${size}px;
   border-radius: 50%;
   background-color: ${({ colour }) => colour};
-  transition: all 0.05s;
+  transition: all 0.2s;
   cursor: pointer;
 `;
 
@@ -22,23 +24,16 @@ function DraggableCircle({ id, onStartDrag, onEndDrag, onDrag, x, y, colour }) {
 
   // Make sure this does not depend on x or y
   React.useEffect(() => {
+    if (!ref.current) return;
     const isVertical = width < height;
     const hingeX = width / 2;
     const hingeY = height / 2;
 
-    let isDragging = false;
+    let endSubs = [];
     let prvPos = { x: 0, y: 0 };
 
-    const onStart = e => {
-      if (!isDragging) {
-        isDragging = true;
-        onStartDrag(id);
-        prvPos = getTouchPos(e);
-      }
-    };
-
     const onMove = e => {
-      if (!isDragging) return;
+      if (endSubs.length === 0) return;
       const pos = getTouchPos(e);
 
       // If cross down
@@ -56,29 +51,32 @@ function DraggableCircle({ id, onStartDrag, onEndDrag, onDrag, x, y, colour }) {
     };
 
     const onEnd = e => {
-      if (!isDragging) return;
+      if (endSubs.length === 0) return;
       if ((e.x && e.y) || e.touches.length === 0) {
-        isDragging = false;
+        endSubs.forEach(sub => sub.unsubscribe());
+        endSubs = [];
         onEndDrag(id);
       }
     };
 
-    const el = ref.current;
-    el.addEventListener("touchstart", onStart);
-    el.addEventListener("mousedown", onStart);
-    window.addEventListener("touchmove", onMove);
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("touchend", onEnd);
-    window.addEventListener("mouseup", onEnd);
-
-    return () => {
-      el.removeEventListener("touchstart", onStart);
-      el.removeEventListener("mousedown", onStart);
-      window.removeEventListener("touchmove", onMove);
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("touchend", onEnd);
-      window.removeEventListener("mouseup", onEnd);
+    const onStart = e => {
+      if (endSubs.length !== 0) return;
+      onStartDrag(id);
+      prvPos = getTouchPos(e);
+      endSubs = [
+        fromEvent(window, "touchmove").pipe(throttleTime(50)).subscribe(onMove),
+        fromEvent(window, "mousemove").pipe(throttleTime(50)).subscribe(onMove),
+        fromEvent(window, "touchend").subscribe(onEnd),
+        fromEvent(window, "mouseup").subscribe(onEnd),
+      ];
     };
+
+    const startSubs = [
+      fromEvent(ref.current, "touchstart").subscribe(onStart),
+      fromEvent(ref.current, "mousedown").subscribe(onStart),
+    ];
+
+    return () => [...endSubs, ...startSubs].forEach(sub => sub.unsubscribe());
   }, [id, onStartDrag, onEndDrag, onDrag, width, height]);
 
   return <Circle ref={ref} x={x} y={y} colour={colour} />;

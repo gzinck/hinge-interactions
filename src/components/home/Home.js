@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
-import { DRAW_ROUTE, WINDOW_ROUTE, TOUCHBAR_ROUTE } from "../../routes";
+import {
+  FILES_ROUTE,
+  DRAW_ROUTE,
+  WINDOW_ROUTE,
+  TOUCHBAR_ROUTE,
+} from "../../routes";
 import theme from "../../theme";
 
 const Screen = styled.div`
@@ -44,6 +49,7 @@ function Home() {
         <Button to={TOUCHBAR_ROUTE}>Touchbar App</Button>
         <Button to={WINDOW_ROUTE}>Window Management App</Button>
         <Button to={DRAW_ROUTE}>Drawing App</Button>
+        <Button to={FILES_ROUTE}>File Management App</Button>
       </ButtonBar>
     </Screen>
   );
