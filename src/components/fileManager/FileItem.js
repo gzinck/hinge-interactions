@@ -7,11 +7,11 @@ import { dragState } from "./constants";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import FileIcon from "./icons/file.svg";
 import Icon from "../util/Icon";
-import ShareEmail from "./screenshots/tbd.jpg";
-import SharePresent from "./screenshots/tbd.jpg";
-import ShareMessage from "./screenshots/tbd.jpg";
-import OpenPreview from "./screenshots/tbd.jpg";
-import OpenEdit from "./screenshots/tbd.jpg";
+import ShareEmail from "./screenshots/share_email.jpg";
+import SharePresent from "./screenshots/share_present.jpg";
+import ShareMessage from "./screenshots/share_message.jpg";
+import OpenPreview from "./screenshots/open_preview.jpg";
+import OpenEdit from "./screenshots/open_edit.jpg";
 
 const Container = styled.div`
   border: 1px solid #555;
@@ -84,8 +84,8 @@ function FileItem({ idx, name, order, setState, duplicate, rename, open }) {
           action: () => open(SharePresent),
         },
         {
-          startX: width / 2,
-          endX: (width * 3) / 4,
+          startX: (width * 3) / 4,
+          endX: width,
           action: () => open(ShareMessage),
         },
       ],

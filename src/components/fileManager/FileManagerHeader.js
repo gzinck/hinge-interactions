@@ -10,28 +10,12 @@ const TopBar = styled.div`
   width: 100%;
   height: 1rem;
   padding: 0.5rem;
-  display: flex;
-  flex-direction: row;
 `;
 
 const TopTitle = styled.div`
-  width: calc(100% - 9rem);
+  width: 100%;
   text-align: center;
   color: white;
-`;
-
-const colours = {
-  YELLOW: "#fac802",
-  RED: "#ff5269",
-  GREEN: "#71ff52",
-};
-
-const Button = styled.div`
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
-  margin: 0 0.25rem;
-  background-color: ${({ colour }) => colour};
 `;
 
 const BottomBar = styled.div`
@@ -52,9 +36,6 @@ function FileManagerHeader() {
   return (
     <Background>
       <TopBar>
-        <Button colour={colours.RED} />
-        <Button colour={colours.YELLOW} />
-        <Button colour={colours.GREEN} />
         <TopTitle>File Manager</TopTitle>
       </TopBar>
       <BottomBar>
