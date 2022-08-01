@@ -55,27 +55,58 @@ const icons = {
   ],
 };
 
-function FileItemBox() {
-  const numFiles = React.createRef(0);
+function FileItemBox({ open }) {
+  const numFiles = React.useRef(defaultFiles.length);
   const [files, setFiles] = React.useState(
     defaultFiles.reduce((acc, name, idx) => ({ ...acc, [idx]: name }), {})
   );
   const [state, setState] = React.useState(dragState.IDLE);
+
+  const duplicate = React.useCallback(
+    name => {
+      setFiles(files => ({
+        ...files,
+        [numFiles.current++]: name,
+      }));
+    },
+    [setFiles]
+  );
+
+  const rename = React.useCallback(
+    (idx, newName) => {
+      setFiles(files => ({
+        ...files,
+        [idx]: newName,
+      }));
+    },
+    [setFiles]
+  );
+
   return (
     <Container>
       {Object.entries(files).map(([idx, file]) => (
-        <FileItem name={file} key={idx} setState={setState} />
-      ))}
-      {Object.entries(icons).flatMap(([s, subicons]) => (subicons.map((ico, i) => (
-        <ForegroundIcon
-          key={i}
-          src={ico.icon}
-          opacity={state === s ? 1 : 0}
-          fraction={ico.fraction}
-          isVertical={true}
-          white
+        <FileItem
+          idx={idx}
+          name={file}
+          key={idx}
+          setState={setState}
+          duplicate={duplicate}
+          rename={rename}
+          open={open}
         />
-      ))))}
+      ))}
+      {Object.entries(icons).flatMap(([s, subicons]) =>
+        subicons.map((ico, i) => (
+          <ForegroundIcon
+            key={`icon ${i} for state ${s}`}
+            src={ico.icon}
+            opacity={state === s ? 1 : 0}
+            fraction={ico.fraction}
+            isVertical={true}
+            white
+          />
+        ))
+      )}
     </Container>
   );
 }

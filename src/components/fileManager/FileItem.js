@@ -7,6 +7,11 @@ import { dragState } from "./constants";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import FileIcon from "./icons/file.svg";
 import Icon from "../util/Icon";
+import ShareEmail from "./screenshots/tbd.jpg";
+import SharePresent from "./screenshots/tbd.jpg";
+import ShareMessage from "./screenshots/tbd.jpg";
+import OpenPreview from "./screenshots/tbd.jpg";
+import OpenEdit from "./screenshots/tbd.jpg";
 
 const Container = styled.div`
   border: 1px solid #555;
@@ -34,9 +39,11 @@ const StyledIcon = styled(Icon)`
 const delta = 50;
 const defaultPos = { x: 0, y: 0 };
 
-function FileItem({ name, order, setState, duplicate, rename, open, share }) {
+function FileItem({ idx, name, order, setState, duplicate, rename, open }) {
   const ref = React.useRef(null);
+  const [newName, setNewName] = React.useState(name);
   const [pos, setPos] = React.useState(defaultPos);
+  const [edit, setEdit] = React.useState(false);
   const { width, height } = useWindowDimensions();
 
   React.useEffect(() => {
@@ -45,28 +52,50 @@ function FileItem({ name, order, setState, duplicate, rename, open, share }) {
     let endSubs = [];
     let state = dragState.DEFAULT;
     let startPos = defaultPos;
+    let prvPos = defaultPos;
     let currOffset = defaultPos;
 
     const actions = {
       [dragState.DEFAULT]: [
-        { startX: 0, endX: width / 4, action: duplicate },
-        { startX: width / 4, endX: width / 2, action: rename },
+        { startX: 0, endX: width / 4, action: () => duplicate(name) },
+        { startX: width / 4, endX: width / 2, action: () => setEdit(true) },
         {
           startX: width / 2,
           endX: (width * 3) / 4,
-          action: () => setState(dragState.SHARE),
+          action: () => {
+            state = dragState.SHARE;
+            setState(dragState.SHARE);
+          },
         },
         {
           startX: (width * 3) / 4,
           endX: width,
-          action: () => setState(dragState.OPEN),
+          action: () => {
+            state = dragState.OPEN;
+            setState(dragState.OPEN);
+          },
         },
       ],
       [dragState.SHARE]: [
-        { startX: 0, endX: width, action: share },
+        { startX: 0, endX: width / 4, action: () => open(ShareEmail) },
+        {
+          startX: width / 4,
+          endX: width / 2,
+          action: () => open(SharePresent),
+        },
+        {
+          startX: width / 2,
+          endX: (width * 3) / 4,
+          action: () => open(ShareMessage),
+        },
       ],
       [dragState.OPEN]: [
-        { startX: width / 4, endX: width, action: open },
+        { startX: width / 4, endX: width / 2, action: () => open(OpenPreview) },
+        {
+          startX: width / 2,
+          endX: (width * 3) / 4,
+          action: () => open(OpenEdit),
+        },
       ],
     };
 
@@ -76,17 +105,39 @@ function FileItem({ name, order, setState, duplicate, rename, open, share }) {
       currOffset = { x: currPos.x - startPos.x, y: currPos.y - startPos.y };
       setPos(currOffset);
 
-      // if currPos just passed the hinge, do the state changes necessary!
-      if (currPos.y < width / 2 - delta || currPos.y > width / 2 + delta)
-        return;
+      // To trigger immediate behaviour, must enter the delta zone from outside
+      const startHinge = height / 2 - delta;
+      const endHinge = height / 2 + delta;
+      if (
+        (state === dragState.DEFAULT &&
+          prvPos.y < startHinge &&
+          currPos.y > startHinge) ||
+        (state === dragState.DEFAULT &&
+          prvPos.y > endHinge &&
+          currPos.y < endHinge)
+      ) {
+        // We just crossed in, do the desired behaviour
+        actions[state].forEach(({ startX, endX, action }) => {
+          if (currPos.x >= startX && currPos.x < endX) action();
+        });
+      }
+      prvPos = currPos;
     };
 
     const onEnd = e => {
       if (endSubs.length === 0) return;
       endSubs.forEach(sub => sub.unsubscribe());
+
+      // Perform the action if it's not the default mode
+      if (state !== dragState.DEFAULT) {
+        actions[state].forEach(({ startX, endX, action }) => {
+          if (prvPos.x >= startX && prvPos.x < endX) action();
+        });
+      }
+
+      state = dragState.DEFAULT;
       setState(dragState.IDLE);
       endSubs = [];
-      // Calculate how far down it went, change the order around
       setPos(defaultPos);
     };
 
@@ -94,6 +145,7 @@ function FileItem({ name, order, setState, duplicate, rename, open, share }) {
       if (endSubs.length !== 0) return;
       setState(dragState.DEFAULT);
       startPos = getTouchPos(e);
+      prvPos = startPos;
 
       endSubs = [
         fromEvent(window, "touchmove").pipe(throttleTime(50)).subscribe(onMove),
@@ -109,12 +161,26 @@ function FileItem({ name, order, setState, duplicate, rename, open, share }) {
     ];
 
     return () => [...endSubs, ...startSubs].forEach(sub => sub.unsubscribe());
-  }, [setState, width, height]);
+  }, [setState, name, width, height, duplicate, open]);
 
   return (
     <Container pos={pos} ref={ref}>
       <StyledIcon draggable={false} white src={FileIcon} />
-      {name}
+      {edit ? (
+        <input
+          value={newName}
+          onChange={e => setNewName(e.target.value)}
+          onKeyPress={e => {
+            if (e.which === 13) {
+              e.preventDefault();
+              rename(idx, newName);
+              setEdit(false);
+            }
+          }}
+        />
+      ) : (
+        name
+      )}
     </Container>
   );
 }
