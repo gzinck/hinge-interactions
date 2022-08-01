@@ -7,11 +7,8 @@ import Touchbar from "./Touchbar";
 import MultitaskBar from "./multitask/MultitaskBar";
 import HalfImg from "../window/screenshots/half.jpg";
 
-const Window = styled.img`
-  position: absolute;
+const Window = styled(BgImage)`
   height: 50vh;
-  width: 100vw;
-  left: 0;
   top: ${({ isBottom }) => (isBottom ? "50vh" : 0)};
 `;
 
