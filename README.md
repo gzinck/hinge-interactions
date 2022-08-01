@@ -1,80 +1,50 @@
-# Window Management
+# Hinge-Based Interaction Demos
 
-A simple demo of how we could use crossing at the hinge to perform window management.
+A series of demos illustrating how we can leverage the hinge of foldable devices for
+interactions. All demos are optimized for the X1 Fold. Some demos require a swipe
+from the edge of the screen, which requires [disabling the Windows edge swipe gesture](https://www.top-password.com/blog/disable-edge-swipe-gesture-in-windows-10/).
 
-## Getting started
+## Getting Started
 
--   Install `node`
--   In the project directory, install dependencies with `npm install`
+-   [Install node](https://nodejs.org/en/)
+-   [Disable the Windows edge swipe gesture (required for the touchbar demo)](https://www.top-password.com/blog/disable-edge-swipe-gesture-in-windows-10/)
+-   In the project directory, install dependencies by running `npm install`
 -   Run with `npm start`
--   Go to `http://localhost:3000` in your web browser to try it out! Try dragging
-    from the Chrome window pictured and crossing the "hinge" or horizontal center to rearrange
--   Try another demo by going to `http://localhost:3000/circle`, which shows how we can cross
-    the hinge multiple times using our interaction technique
+-   Go to `http://localhost:3000` in your web browser to try it out!
 
-## Available Scripts
+## Overview of Demos
 
-In the project directory, you can run:
+### Touchbar App
 
-### `npm start`
+This demo shows a touchbar by swiping from the right edge of the hinge. This reveals buttons
+for controlling media, sliders for brightness/volume, and a slider for selecting a wifi
+network.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Sliding from the left edge of the hinge opens a multitasking menu. Dragging a window down
+from the hinge opens the app either on the top or bottom half of the screen.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+This demo is optimized for **portrait orientation only** (like a laptop is oriented).
 
-### `npm test`
+### Window Management App
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+This shows how we can drag windows through various parts of the hinge to align windows in various
+sections of the screen. Try dragging the window through different icons which show up along the
+hinge.
 
-### `npm run build`
+This demo is optimized for both orientations.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Drawing App
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+This shows a basic way we can manipulate objects in a drawing application by dragging through
+different sections of the hinge. It's possible to cross the hinge multiple times to make multiple
+selections, like duplicating the circle and turning it green.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+This demo is optimized for both orientations.
 
-### `npm run eject`
+### File Management App
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+This shows how we can perform actions like duplicate and rename by dragging a file through the
+hinge multiple times in sequence. It also allows opening and sharing a file by dragging to
+the appropriate icon and then dragging along the hinge to the specific app/sharing option.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This demo is optimized for **portrait orientation only** (like a laptop is oriented).
