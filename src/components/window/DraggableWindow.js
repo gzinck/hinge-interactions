@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { fromEvent } from "rxjs";
+import { throttleTime } from "rxjs/operators";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import CloseIcon from "./icons/Close.svg";
 import FullIcon from "./icons/Full Screen.svg";
@@ -102,7 +104,7 @@ function DraggableWindow() {
   if (isDragging && speed === 0) setSpeed(defaultSpeed);
 
   React.useEffect(() => {
-    let isDragging = false;
+    let endSubs = [];
     let state = State.TOP;
     let pos = { shortDir: 0, longDir: 0 };
 
@@ -123,16 +125,6 @@ function DraggableWindow() {
           };
     };
 
-    const onStart = e => {
-      if (!isDragging) {
-        isDragging = true;
-        setIsDragging(true);
-        setState(State.FOLLOW);
-      }
-      pos = getPos(e);
-      setPos(pos);
-    };
-
     const hingePos = longSideLen / 2;
     const bounds = [
       [0, shortSideLen / 4],
@@ -142,7 +134,7 @@ function DraggableWindow() {
     ];
 
     const onMove = e => {
-      if (!isDragging) return;
+      if (endSubs.length === 0) return;
       const prvPos = pos;
       pos = getPos(e);
       setPos(pos);
@@ -168,30 +160,38 @@ function DraggableWindow() {
     };
 
     const onEnd = e => {
-      if (!isDragging) return;
+      if (endSubs.length === 0) return;
+      endSubs.forEach(sub => sub.unsubscribe());
+      endSubs = [];
+
       if ((e.x && e.y) || e.touches.length === 0) {
-        isDragging = false;
         setIsDragging(false);
         // Keep the same state, or revert if nothing changed
         setState(state);
       }
     };
 
-    const el = ref.current;
-    el.addEventListener("touchstart", onStart);
-    el.addEventListener("mousedown", onStart);
-    window.addEventListener("touchmove", onMove);
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("touchend", onEnd);
-    window.addEventListener("mouseup", onEnd);
-    return () => {
-      el.removeEventListener("touchstart", onStart);
-      el.removeEventListener("mousedown", onStart);
-      window.removeEventListener("touchmove", onMove);
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("touchend", onEnd);
-      window.removeEventListener("mouseup", onEnd);
+    const onStart = e => {
+      if (endSubs.length !== 0) return;
+      setIsDragging(true);
+      setState(State.FOLLOW);
+      pos = getPos(e);
+      setPos(pos);
+
+      endSubs = [
+        fromEvent(window, "touchmove").pipe(throttleTime(50)).subscribe(onMove),
+        fromEvent(window, "mousemove").pipe(throttleTime(50)).subscribe(onMove),
+        fromEvent(window, "touchend").subscribe(onEnd),
+        fromEvent(window, "mouseup").subscribe(onEnd),
+      ];
     };
+
+    const startSubs = [
+      fromEvent(ref.current, "touchstart").subscribe(onStart),
+      fromEvent(ref.current, "mousedown").subscribe(onStart),
+    ];
+
+    return () => [...endSubs, ...startSubs].forEach(sub => sub.unsubscribe());
   }, [shortSideLen, longSideLen, isVertical]);
 
   let boxShortLen = shortSideLen / 2;
