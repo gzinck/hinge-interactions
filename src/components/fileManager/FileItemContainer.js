@@ -21,7 +21,7 @@ const defaultFiles = [
   "README.txt",
   "Invoice.docx",
   "Resume.pdf",
-  "family.jpg",
+  "tbd.jpg",
   "notes.txt",
   "code.js",
 ];

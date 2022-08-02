@@ -46,6 +46,11 @@ function FileItem({ idx, name, order, setState, duplicate, rename, open }) {
   const [edit, setEdit] = React.useState(false);
   const { width, height } = useWindowDimensions();
 
+  const onInputAppear = React.useCallback((node) => {
+    if (!node) return;
+    node.focus();
+  }, []);
+
   React.useEffect(() => {
     if (!ref.current) return;
 
@@ -168,6 +173,7 @@ function FileItem({ idx, name, order, setState, duplicate, rename, open }) {
       <StyledIcon draggable={false} white src={FileIcon} />
       {edit ? (
         <input
+          ref={onInputAppear}
           value={newName}
           onChange={e => setNewName(e.target.value)}
           onKeyPress={e => {
