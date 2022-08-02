@@ -5,20 +5,19 @@ import { fromEvent } from "rxjs";
 import { throttleTime } from "rxjs/operators";
 import { getTouchPos } from "../../utils/events";
 
-const size = 300;
 const Circle = styled.div`
   position: absolute;
-  left: ${({ x }) => x - size / 2}px;
-  top: ${({ y }) => y - size / 2}px;
-  width: ${size}px;
-  height: ${size}px;
+  left: ${({ x, size }) => x - size / 2}px;
+  top: ${({ y, size }) => y - size / 2}px;
+  width: ${({size}) => size}px;
+  height: ${({size}) => size}px;
   border-radius: 50%;
   background-color: ${({ colour }) => colour};
   transition: all 0.2s;
   cursor: pointer;
 `;
 
-function DraggableCircle({ id, onStartDrag, onEndDrag, onDrag, x, y, colour }) {
+function DraggableCircle({ id, onStartDrag, onEndDrag, onDrag, x, y, colour, size }) {
   const { width, height } = useWindowDimensions();
   const ref = React.useRef(null);
 
@@ -79,7 +78,7 @@ function DraggableCircle({ id, onStartDrag, onEndDrag, onDrag, x, y, colour }) {
     return () => [...endSubs, ...startSubs].forEach(sub => sub.unsubscribe());
   }, [id, onStartDrag, onEndDrag, onDrag, width, height]);
 
-  return <Circle ref={ref} x={x} y={y} colour={colour} />;
+  return <Circle ref={ref} x={x} y={y} colour={colour} size={size} />;
 }
 
 export default DraggableCircle;
